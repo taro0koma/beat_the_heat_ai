@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { AzureOpenAI } from "@azure/openai";
+import { AzureOpenAI } from 'openai'; // OpenAI から AzureOpenAI をインポート
+import "@azure/openai/types";
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ const apiKey = process.env.AZURE_OPENAI_API_KEY;
 const endpoint = process.env.AZURE_OPENAI_ENDPOINT; 
 const deployment = "gpt-4o"; // デプロイ名
 const apiVersion = "2024-11-20";
+
 const app = express();
 
 app.use(cors());
@@ -20,10 +22,11 @@ app.post('/api/azure/beattheheat', async (req, res) => {
       deployment, apiVersion, apiKey, endpoint,
     });
 
-    const role = req.body.role; // roleを別パラメータで受け取る
-    const content = req.body.content; // contentを別パラメータで受け取る
+    const role = req.body.role; 
+    const content = req.body.content; 
 
     const response = await client.chat.completions.create({
+      model: deployment,
       messages: [{ role: role, content: content }],
     });
 
